@@ -93,6 +93,9 @@ Pocket-Professor/
 │   └── quiz.png
 │
 └── assets/
+```
+
+---
 
 ## 📖 Usage Instructions
 
