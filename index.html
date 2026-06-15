@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" href="favicon_io/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="favicon_io/apple-touch-icon.png">
+  <link rel="manifest" href="favicon_io/site.webmanifest">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pocket Professor — Fixed HTML</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <style>
+    :root{--bg:#08111c;--bg2:#0d1727;--surface:rgba(255,255,255,.035);--surface-strong:rgba(255,255,255,.07);--border:rgba(255,255,255,.09);--text:#eef2f8;--muted:#8d99ad;--cyan:#59e8ff;--violet:#b48bff;--green:#63e6a7;--amber:#ffcf5a;--red:#ff6d84;--shadow:0 22px 60px rgba(0,0,0,.34);--radius:16px;color-scheme:dark}
+    *{box-sizing:border-box} html,body{margin:0;height:100%} body{font-family:'Inter',sans-serif;background:radial-gradient(circle at 80% 0%, rgba(89,232,255,.08), transparent 34%),radial-gradient(circle at 0% 100%, rgba(180,139,255,.09), transparent 38%),linear-gradient(180deg,var(--bg),var(--bg2));color:var(--text);min-height:100vh}
+    .app{display:flex;min-height:100vh} .sidebar{width:260px;flex-shrink:0;border-right:1px solid var(--border);padding:22px 16px;display:flex;flex-direction:column;gap:18px;position:sticky;top:0;height:100vh;background:rgba(8,14,24,.64);backdrop-filter:blur(10px)}
+    .brand{display:flex;align-items:center;gap:12px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.1rem}.brand-mark{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--cyan),var(--violet));display:flex;align-items:center;justify-content:center;color:#08111c;font-weight:800;box-shadow:0 0 20px rgba(89,232,255,.35)}
+    .status{padding:14px;border:1px solid var(--border);border-radius:14px;background:var(--surface);line-height:1.5;font-size:.86rem;color:var(--muted)} .status b{color:var(--green)}
+    .nav{display:flex;flex-direction:column;gap:6px;margin-top:2px}.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;color:var(--muted);font-size:.93rem;font-weight:600;cursor:pointer;border:1px solid transparent;transition:.15s;user-select:none}.nav-item:hover{background:var(--surface);color:var(--text)} .nav-item.active{color:var(--text);background:var(--surface-strong);border-color:var(--border)}
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex-shrink:0}.nav-item.active .dot{background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+    .nav-label{margin:10px 0 4px 10px;font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+    .library{flex:1;overflow:auto;padding-right:2px;display:flex;flex-direction:column;gap:6px}.lib-item{padding:10px;border-radius:10px;color:var(--muted);font-size:.84rem;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:1px solid transparent;transition:.15s}.lib-item:hover{background:var(--surface);color:var(--text)}.lib-item.active{background:var(--surface-strong);border-color:var(--border);color:var(--text)}
+    .sidebar-footer{border-top:1px solid var(--border);padding-top:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.7rem;line-height:1.6}.sidebar-footer b{color:var(--cyan)}
+    .main{flex:1;min-width:0;padding:28px 32px 56px;max-width:1180px}.topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:22px}.title h1{margin:0 0 6px;font-size:2.1rem;line-height:1.05;font-family:'Space Grotesk',sans-serif;letter-spacing:-.02em}.title p{margin:0;color:var(--muted);max-width:720px;line-height:1.6;font-size:.95rem}
+    .badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.badge{border:1px solid var(--border);background:var(--surface);color:var(--muted);padding:7px 11px;border-radius:999px;font-size:.74rem;font-family:'JetBrains Mono',monospace}.badge.live{color:var(--green);border-color:rgba(99,230,167,.25);background:rgba(99,230,167,.08)}
+    .actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.upload-btn,.secondary-btn,.gen-btn,.icon-btn{border:none;border-radius:12px;cursor:pointer;transition:.15s;font-weight:700;font-family:'Inter',sans-serif}.upload-btn{background:linear-gradient(135deg,var(--cyan),var(--violet));color:#09101b;padding:12px 18px;box-shadow:0 10px 28px rgba(89,232,255,.18)}.secondary-btn,.gen-btn{background:var(--surface-strong);color:var(--text);border:1px solid var(--border)}.secondary-btn{padding:12px 15px}.gen-btn{padding:10px 15px}.upload-btn:hover,.secondary-btn:hover,.gen-btn:hover,.icon-btn:hover{transform:translateY(-1px);border-color:var(--cyan);color:var(--cyan)}
+    #pdf-input{display:none}.panel{display:none;animation:fade .3s ease}.panel.active{display:block}@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .empty{border:1px dashed var(--border);border-radius:var(--radius);padding:56px 26px;text-align:center;color:var(--muted);background:rgba(255,255,255,.02)}.empty b{color:var(--text)}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 22px;margin-bottom:14px}.section-title{margin:0 0 14px;font-family:'Space Grotesk',sans-serif;font-size:1.08rem;display:flex;align-items:center;justify-content:space-between;gap:10px}.pill{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--muted);border:1px solid var(--border);padding:3px 9px;border-radius:999px;white-space:nowrap}.reader-page{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--radius);padding:26px 28px;line-height:1.92;font-size:.96rem;color:#e1e7f1;max-height:62vh;overflow:auto;white-space:pre-wrap;word-wrap:break-word}.reader-page mark{background:linear-gradient(120deg, rgba(89,232,255,.48) 0%, rgba(89,232,255,.48) 100%);background-repeat:no-repeat;background-size:100% .55em;background-position:0 88%;color:inherit;border-radius:2px;padding:0 1px}.hint{color:var(--muted);font-size:.81rem;line-height:1.55;margin:10px 0 0}
+    .note-point{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);line-height:1.65;font-size:.94rem}.note-point:last-child{border-bottom:none}.note-num{font-family:'JetBrains Mono',monospace;color:var(--cyan);font-size:.78rem;padding-top:2px;flex-shrink:0}
+    .fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}.fc{position:relative;height:150px;cursor:pointer;perspective:1000px}.fc-inner{position:relative;width:100%;height:100%;transition:transform .5s cubic-bezier(.4,.2,.2,1);transform-style:preserve-3d}.fc.flipped .fc-inner{transform:rotateY(180deg)}.fc-face{position:absolute;inset:0;border-radius:14px;padding:16px;display:flex;align-items:center;justify-content:center;text-align:center;backface-visibility:hidden;font-size:.9rem;line-height:1.55;border:1px solid var(--border);box-shadow:var(--shadow)}.fc-front{background:linear-gradient(160deg, rgba(89,232,255,.10), rgba(89,232,255,.03))}.fc-back{background:linear-gradient(160deg, rgba(180,139,255,.14), rgba(180,139,255,.04));transform:rotateY(180deg)}.fc-tag{position:absolute;top:10px;left:12px;font-family:'JetBrains Mono',monospace;color:var(--muted);font-size:.64rem}
+    .ask-row{display:flex;gap:10px;margin-bottom:14px;align-items:center}.ask-input{flex:1;border-radius:12px;padding:13px 14px;border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--text);font-size:.94rem;outline:none}.ask-input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(89,232,255,.08)}.icon-btn{width:48px;height:48px;border-radius:12px;background:var(--surface-strong);color:var(--text);border:1px solid var(--border);font-size:1.05rem;flex-shrink:0}
+    .answer-box{min-height:72px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;line-height:1.75;font-size:.95rem}.answer-box .src{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);color:var(--muted);font-size:.76rem;font-family:'JetBrains Mono',monospace}.speak-btn{margin-top:12px;background:none;border:1px solid var(--border);color:var(--cyan);border-radius:10px;padding:7px 12px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.77rem}
+    .progress-wrap{margin-top:14px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:999px;height:9px;overflow:hidden}.progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--violet));transition:width .22s}.quiz-q{font-size:1rem;margin:0 0 14px;font-weight:600;line-height:1.5}.quiz-opt{display:block;width:100%;text-align:left;padding:12px 14px;margin-bottom:9px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--text);cursor:pointer;font-size:.92rem;transition:.15s}.quiz-opt:hover{border-color:var(--cyan)}.quiz-opt.correct{border-color:var(--green);background:rgba(99,230,167,.11)}.quiz-opt.wrong{border-color:var(--red);background:rgba(255,109,132,.11)}.quiz-nav{display:flex;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap}.quiz-progress{font-size:.78rem;color:var(--muted);font-family:'JetBrains Mono',monospace}.loader{display:inline-flex;align-items:center;gap:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.76rem}.spinner{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.18);border-top-color:var(--cyan);animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+    ::-webkit-scrollbar{width:9px;height:9px} ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:999px} ::-webkit-scrollbar-track{background:transparent}
+    @media (max-width:880px){.sidebar{display:none}.main{padding:18px}.title h1{font-size:1.7rem}}
+    #deleteAllBtn {
+    background: rgba(255, 0, 0, 0.12);
+    color: #ff6d84;
+    border: 1px solid rgba(255, 109, 132, 0.3);
+    border-radius: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.25s ease;
+}
+
+#deleteAllBtn:hover {
+    background: rgba(255, 0, 0, 0.22);
+    border-color: #ff6d84;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 109, 132, 0.2);
+}
+
+#deleteAllBtn:active {
+    transform: translateY(0);
+}
+
+#deleteAllBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">PP</div><div>Pocket Professor<br><span style="color:var(--muted);font-size:.77rem;font-weight:600">On-Device AI Study Assistant</span></div></div>
+    <div class="status" id="status-box">No document loaded.<br>Everything runs <b>locally</b> in your browser.</div>
+    <div class="nav">
+      <div class="nav-item active" data-panel="read"><span class="dot"></span>Read &amp; Highlight</div>
+      <div class="nav-item" data-panel="notes"><span class="dot"></span>Notes</div>
+      <div class="nav-item" data-panel="flashcards"><span class="dot"></span>Flashcards</div>
+      <div class="nav-item" data-panel="quiz"><span class="dot"></span>Quiz</div>
+      <div class="nav-item" data-panel="ask"><span class="dot"></span>Ask a Question</div>
+    </div>
+    <div class="nav-label">Library</div><div class="library" id="library"></div>
+
+    <div class="sidebar-footer"><div><b>Privacy:</b> no cloud API for core AI.</div><div><b>Storage:</b> IndexedDB.</div><div><b>Speech:</b> browser APIs.</div><b7 font-size=".22rem">Copyright (c) 2026 Rajdeep Choudhury</b7></div>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <div class="title">
+        <h1>Pocket Professor</h1>
+        <p id="doc-subtitle">Upload a PDF, then generate notes, flashcards and quizzes from it — with core AI running locally on your device.</p>
+        <div class="badge-row"><span class="badge live" id="ai-badge">🟢 Local study tools ready</span><span class="badge">Offline-first</span><span class="badge">Browser-based</span><span class="badge">Privacy-friendly</span></div>
+      </div>
+      <div class="actions"><button class="secondary-btn" id="init-ai-btn">⚡ Prepare Local AI</button><button class="upload-btn" id="upload-btn">📄 Upload PDF</button><button id="deleteAllBtn" class="secondary-btn">🗑️ Delete All</button><input type="file" id="pdf-input" accept="application/pdf" /></div>
+    </div>
+    <section class="panel active" id="panel-read"><div id="read-empty" class="empty"><b>No document yet.</b><br><br>Click <b>Upload PDF</b> above to load study material. Pocket Professor will extract the text so you can read it, then generate notes, flashcards and quizzes from it.</div><div id="read-content" style="display:none;"><div class="reader-page" id="reader-text"></div><p class="hint">Tip: ask a question and the matching sentence will be highlighted here. The answer is shown below.</p></div></section>
+    <section class="panel" id="panel-notes"><div class="card"><h2 class="section-title"><span>Key Points</span><span class="pill" id="notes-pill">not generated</span></h2><button class="gen-btn" id="gen-notes">✦ Generate Notes</button><div id="notes-output"></div></div></section>
+    <section class="panel" id="panel-flashcards"><div class="card"><h2 class="section-title"><span>Flashcards</span><span class="pill" id="fc-pill">not generated</span></h2><button class="gen-btn" id="gen-fc">✦ Generate Flashcards</button><p class="hint" id="fc-hint" style="display:none;">Click any card to flip between the prompt and the answer.</p><div class="fc-grid" id="fc-output"></div></div></section>
+    <section class="panel" id="panel-quiz"><div class="card"><h2 class="section-title"><span>Quiz</span><span class="pill" id="quiz-pill">not generated</span></h2><button class="gen-btn" id="gen-quiz">✦ Generate Quiz</button><div id="quiz-output"></div></div></section>
+    <section class="panel" id="panel-ask"><div class="card"><h2 class="section-title"><span>Ask a Question</span><span class="pill" id="qa-pill">local QA</span></h2><div class="ask-row"><input class="ask-input" id="ask-input" placeholder="Type or speak a question about your document…" /><button class="icon-btn" id="mic-btn" title="Speak your question">🎤</button><button class="icon-btn" id="ask-btn" title="Ask">➜</button></div><div class="answer-box" id="answer-box">Your answer will appear here, found directly from the document text.</div></div></section>
+  </main>
+</div>
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  const DB_NAME = "pocket-professor"; const STORE = "documents"; let db = null;
+  const state = { currentDoc: null, library: [], quiz: { qIndex:0, score:0, quiz:[] } };
+  const STOPWORDS = new Set(("the a an and or but if then else for of to in on at by with from as is are was were be been being this that these those it its it's into about over under again further than too very can will just don't should now i you he she we they them his her our your their not no nor so do does did doing have has had having which who whom what when where why how all any both each few more most other some such only own same also there here".split(/\s+/)));
+  const $ = id => document.getElementById(id);
+  const escapeHtml = s => String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+  function setStatus(html){ $("status-box").innerHTML = html; }
+  function setBadge(text, kind="ok"){ const b=$("ai-badge"); b.textContent=text; b.className=`badge ${kind==='ok'?'live':kind}`; }
+  function setQaPill(text){ $("qa-pill").textContent = text; }
+  function splitSentences(text){ const n=String(text||"").replace(/\r/g," ").replace(/\s+/g," ").trim(); if(!n) return []; const raw=n.match(/[^.!?]+[.!?]+(?:\s|$)/g)||[n]; return raw.map(s=>s.trim()).filter(s=>s.length>=20); }
+  function tokenize(s){ return String(s).toLowerCase().match(/[a-z0-9]+/g)||[]; }
+  function wordFreq(sentences){ const freq={}; for(const s of sentences){ for(const w of tokenize(s)){ if(STOPWORDS.has(w)||w.length<3) continue; freq[w]=(freq[w]||0)+1; } } return freq; }
+  function scoreSentence(s,freq){ const tokens=tokenize(s).filter(w=>!STOPWORDS.has(w)&&w.length>=3); if(!tokens.length) return 0; const sum=tokens.reduce((a,w)=>a+(freq[w]||0),0); return sum/Math.sqrt(tokens.length); }
+  function topSentences(sentences,count){ const freq=wordFreq(sentences); const scored=sentences.map((s,i)=>({s,i,score:scoreSentence(s,freq)})); return scored.sort((a,b)=>b.score-a.score).slice(0,Math.max(4,Math.min(count,sentences.length))).sort((a,b)=>a.i-b.i).map(x=>x.s); }
+  function buildNotes(sentences){ return topSentences(sentences, Math.max(5, Math.round(sentences.length*0.18))); }
+  function buildFlashcards(sentences){ const freq=wordFreq(sentences); const cards=[]; const seen=new Set(); const defPattern=/^(.{2,60}?)\s+(?:is|are|refers to|means|is defined as|can be defined as)\s+(.{8,200})$/i; for(const sent of sentences){ const clean=sent.replace(/[.!?]+$/,''); const m=clean.match(defPattern); if(m){ const term=m[1].trim().replace(/^(the|a|an)\s+/i,''); if(term.split(/\s+/).length<=6 && !seen.has(term.toLowerCase())){ seen.add(term.toLowerCase()); cards.push({front:`What is ${term}?`, back:`${term} ${m[2].trim()}.`}); } } if(cards.length>=8) break; } if(cards.length<6){ const ranked=sentences.map(s=>({s,score:scoreSentence(s,freq)})).sort((a,b)=>b.score-a.score); for(const {s} of ranked){ if(cards.length>=12) break; const words=s.replace(/[.!?]+$/,'').split(/\s+/); let best=null; let bestScore=-1; for(const w of words){ const clean=w.toLowerCase().replace(/[^a-z0-9]/g,''); if(clean.length<5||STOPWORDS.has(clean)||seen.has(clean)) continue; const sc=freq[clean]||0; if(sc>bestScore){bestScore=sc; best=w;} } if(!best) continue; seen.add(best.toLowerCase().replace(/[^a-z0-9]/g,'')); cards.push({front:words.map(w=>w===best?'_____':w).join(' ')+'.', back:`Answer: ${best.replace(/[^a-zA-Z0-9]/g,'')}`}); } } return cards.slice(0,12); }
+  function buildQuiz(cards){ const quiz=[]; const defs=cards.filter(c=>c.front.startsWith('What is ')); for(let i=0;i<defs.length;i++){ const current=defs[i]; const distractors=defs.filter((_,idx)=>idx!==i).map(c=>c.back).filter(Boolean).slice(0,3); if(distractors.length<3) continue; quiz.push({question:current.front, options:shuffle([current.back,...distractors]), answer:current.back}); if(quiz.length>=8) break; } return quiz; }
+  function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+  function findBestSentence(question,sentences){ const qTokens=new Set(tokenize(question).filter(w=>!STOPWORDS.has(w)&&w.length>=3)); if(!qTokens.size) return null; let best=null; let bestScore=0; for(const s of sentences){ const sTokens=tokenize(s).filter(w=>!STOPWORDS.has(w)&&w.length>=3); if(!sTokens.length) continue; let overlap=0; for(const w of sTokens) if(qTokens.has(w)) overlap++; const score=overlap/Math.sqrt(sTokens.length); if(score>bestScore){ bestScore=score; best=s; } } return bestScore>0?best:null; }
+  function highlightSentence(sentence){ if(!sentence) return; const content=escapeHtml(state.currentDoc.text.slice(0,50000)); const escaped=escapeHtml(sentence); const re=new RegExp(escaped.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')); $("reader-text").innerHTML=content.replace(re, `<mark>${escaped}</mark>`); }
+  function openDB(){ return new Promise((resolve,reject)=>{ const req=indexedDB.open(DB_NAME,1); req.onupgradeneeded=e=>{ const d=e.target.result; if(!d.objectStoreNames.contains(STORE)) d.createObjectStore(STORE,{keyPath:'id'}); }; req.onsuccess=e=>{ db=e.target.result; resolve(db); }; req.onerror=e=>reject(e); }); }
+  function dbPut(doc){ return new Promise((resolve,reject)=>{ const tx=db.transaction(STORE,'readwrite'); tx.objectStore(STORE).put(doc); tx.oncomplete=()=>resolve(); tx.onerror=e=>reject(e); }); }
+  function dbGetAll(){ return new Promise((resolve,reject)=>{ const tx=db.transaction(STORE,'readonly'); const req=tx.objectStore(STORE).getAll(); req.onsuccess=()=>resolve(req.result); req.onerror=e=>reject(e); }); }
+  async function refreshLibrary(){ const all=await dbGetAll(); all.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)); state.library=all; const lib=$("library"); lib.innerHTML=''; if(!all.length){ lib.innerHTML='<div class="lib-item" style="cursor:default;color:var(--muted)">No documents yet</div>'; return; } for(const doc of all){ const item=document.createElement('div'); item.className='lib-item'+(state.currentDoc&&state.currentDoc.id===doc.id?' active':''); item.textContent=doc.title; item.dataset.id=doc.id; item.addEventListener('click',()=>loadDocument(doc)); lib.appendChild(item); } }
+  function highlightLibraryActive(id){ document.querySelectorAll('.lib-item').forEach(el=>el.classList.toggle('active', el.dataset.id===id)); }
+  function resetGenerated(kind){ if(kind==='notes'){ $("notes-output").innerHTML=''; $("notes-pill").textContent='not generated'; } if(kind==='flashcards'){ $("fc-output").innerHTML=''; $("fc-pill").textContent='not generated'; $("fc-hint").style.display='none'; } if(kind==='quiz'){ $("quiz-output").innerHTML=''; $("quiz-pill").textContent='not generated'; } }
+  function renderNotes(points){ $("notes-pill").textContent=`${points.length} key points`; $("notes-output").innerHTML = points.map((p,i)=>`<div class="note-point"><span class="note-num">${String(i+1).padStart(2,'0')}</span><span>${escapeHtml(p)}</span></div>`).join(''); }
+  function renderFlashcards(cards){ $("fc-pill").textContent=`${cards.length} cards`; $("fc-hint").style.display=cards.length?'block':'none'; const grid=$("fc-output"); grid.innerHTML=''; for(const [i,c] of cards.entries()){ const fc=document.createElement('div'); fc.className='fc'; fc.innerHTML=`<div class="fc-inner"><div class="fc-face fc-front"><div><span class="fc-tag">CARD ${i+1}</span>${escapeHtml(c.front)}</div></div><div class="fc-face fc-back"><div>${escapeHtml(c.back)}</div></div></div>`; fc.addEventListener('click',()=>fc.classList.toggle('flipped')); grid.appendChild(fc); } }
+  function renderQuiz(quiz){ $("quiz-pill").textContent=`${quiz.length} questions`; const out=$("quiz-output"); if(!quiz.length){ out.innerHTML=`<p class="hint">Not enough distinct definitions were found. Try a longer document or a chapter with more concepts.</p>`; return; } state.quiz={qIndex:0, score:0, quiz}; renderQuizQuestion(); }
+  function renderQuizQuestion(){ const {quiz,qIndex}=state.quiz; const out=$("quiz-output"); if(qIndex>=quiz.length){ const pct=quiz.length?Math.round((state.quiz.score/quiz.length)*100):0; out.innerHTML=`<div class="quiz-q">Quiz complete! Score: ${state.quiz.score} / ${quiz.length}</div><div class="hint">Local quiz finished. You can regenerate for another round.</div><div class="progress-wrap"><div class="progress-bar" style="width:${pct}%"></div></div><div class="quiz-nav"><button class="gen-btn" id="quiz-restart">↺ Restart Quiz</button></div>`; $("quiz-restart").addEventListener('click',()=>{ state.quiz.qIndex=0; state.quiz.score=0; renderQuizQuestion(); }); return; } const q=quiz[qIndex]; out.innerHTML=`<div class="quiz-progress">Question ${qIndex+1} of ${quiz.length}</div><div class="quiz-q" style="margin-top:8px;">${escapeHtml(q.question)}</div><div id="quiz-options"></div>`; const optsDiv=$("quiz-options"); for(const opt of q.options){ const b=document.createElement('button'); b.className='quiz-opt'; b.textContent=opt; b.addEventListener('click',()=>{ document.querySelectorAll('.quiz-opt').forEach(o=>o.disabled=true); if(opt===q.answer){ b.classList.add('correct'); state.quiz.score++; } else { b.classList.add('wrong'); document.querySelectorAll('.quiz-opt').forEach(o=>{ if(o.textContent===q.answer) o.classList.add('correct'); }); } setTimeout(()=>{ state.quiz.qIndex++; renderQuizQuestion(); }, 900); }); optsDiv.appendChild(b); } }
+  function speak(text){ if(!('speechSynthesis' in window)){ alert('Speech synthesis is not supported in this browser.'); return; } window.speechSynthesis.cancel(); const utter=new SpeechSynthesisUtterance(text); utter.rate=1; window.speechSynthesis.speak(utter); }
+  async function extractPdfText(file){ const buf=await file.arrayBuffer(); const pdf=await pdfjsLib.getDocument({data:buf, useWorkerFetch:true, isEvalSupported:false, disableFontFace:true}).promise; let text=''; let ocrText=''; for(let p=1;p<=pdf.numPages;p++){ const page=await pdf.getPage(p); const content=await page.getTextContent({normalizeWhitespace:true}); const pageText=content.items.map(item=>item.str).join(' ').replace(/\s+/g,' ').trim(); if(pageText){ text += pageText + '\n'; } else { const viewport=page.getViewport({scale:1.75}); const canvas=document.createElement('canvas'); const ctx=canvas.getContext('2d',{willReadFrequently:true}); canvas.width=viewport.width; canvas.height=viewport.height; await page.render({canvasContext:ctx, viewport}).promise; const { data } = await Tesseract.recognize(canvas, 'eng'); const t=String(data?.text||'').replace(/\s+/g,' ').trim(); if(t) ocrText += t + '\n'; } setStatus(`Extracting page ${p} of ${pdf.numPages}…`); } return (text || ocrText).trim(); }
+  async function prepareLocalAI(){ setBadge('🟢 Local tools active','ok'); setQaPill('local QA'); setStatus('Local study tools are ready. Upload a document to begin.'); }
+  async function loadDocument(doc){ state.currentDoc=doc; $("doc-subtitle").textContent=`Studying: ${doc.title}`; $("read-empty").style.display='none'; $("read-content").style.display='block'; $("reader-text").innerHTML=escapeHtml(doc.text.slice(0,50000)); if(doc.notes) renderNotes(doc.notes); else resetGenerated('notes'); if(doc.flashcards) renderFlashcards(doc.flashcards); else resetGenerated('flashcards'); if(doc.quiz) renderQuiz(doc.quiz); else resetGenerated('quiz'); highlightLibraryActive(doc.id); setStatus(`<b>Loaded</b>: ${doc.title}<br>${doc.sentences.length} sentences extracted.`); }
+  $("upload-btn").addEventListener('click',()=>$("pdf-input").click()); $("init-ai-btn").addEventListener('click',prepareLocalAI);
+  $("pdf-input").addEventListener('change', async e=>{ const file=e.target.files[0]; if(!file) return; try{ setStatus(`Reading "${file.name}"…`); const text=await extractPdfText(file); const sentences=splitSentences(text); console.log('Extracted text length:', text.length); console.log('Sentence count:', sentences.length); console.log('Preview:', text.slice(0,1000)); const doc={ id:String(Date.now()), title:file.name.replace(/\.pdf$/i,''), text, sentences, notes:null, flashcards:null, quiz:null, createdAt:new Date().toISOString() }; state.currentDoc=doc; await dbPut(doc); await refreshLibrary(); await loadDocument(doc); } catch(err){ console.error(err); setStatus(`<span style="color:var(--red)">Could not read PDF: ${escapeHtml(err.message||String(err))}</span>`); } e.target.value=''; });
+  document.querySelectorAll('.nav-item').forEach(item=>item.addEventListener('click',()=>{ document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active')); item.classList.add('active'); document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); $("panel-"+item.dataset.panel).classList.add('active'); }));
+  $("gen-notes").addEventListener('click', async ()=>{ if(!state.currentDoc) return alert('Upload a PDF first.'); if(!state.currentDoc.sentences.length){ alert('No readable text was extracted from the PDF. Try a text-based PDF or wait for OCR fallback.'); return; } $("gen-notes").disabled=true; $("notes-output").innerHTML=`<div class="loader"><span class="spinner"></span>Generating notes...</div>`; try{ const points=buildNotes(state.currentDoc.sentences); state.currentDoc.notes=points; await dbPut(state.currentDoc); renderNotes(points); } finally { $("gen-notes").disabled=false; } });
+  $("gen-fc").addEventListener('click', async ()=>{ if(!state.currentDoc) return alert('Upload a PDF first.'); if(!state.currentDoc.sentences.length){ alert('No readable text was extracted from the PDF. Try a text-based PDF or wait for OCR fallback.'); return; } $("gen-fc").disabled=true; $("fc-output").innerHTML=`<div class="loader"><span class="spinner"></span>Generating flashcards...</div>`; try{ const cards=buildFlashcards(state.currentDoc.sentences); state.currentDoc.flashcards=cards; await dbPut(state.currentDoc); renderFlashcards(cards); } finally { $("gen-fc").disabled=false; } });
+  $("gen-quiz").addEventListener('click', async ()=>{ if(!state.currentDoc) return alert('Upload a PDF first.'); if(!state.currentDoc.sentences.length){ alert('No readable text was extracted from the PDF. Try a text-based PDF or wait for OCR fallback.'); return; } $("gen-quiz").disabled=true; $("quiz-output").innerHTML=`<div class="loader"><span class="spinner"></span>Generating quiz...</div>`; try{ if(!state.currentDoc.flashcards) state.currentDoc.flashcards=buildFlashcards(state.currentDoc.sentences); const quiz=buildQuiz(state.currentDoc.flashcards); state.currentDoc.quiz=quiz; await dbPut(state.currentDoc); renderQuiz(quiz); } finally { $("gen-quiz").disabled=false; } });
+  const askInput=$("ask-input"); const answerBox=$("answer-box"); $("ask-btn").addEventListener('click', handleAsk); askInput.addEventListener('keydown', e=>{ if(e.key==='Enter') handleAsk(); });
+  document.getElementById("deleteAllBtn")
+.addEventListener("click", async () => {
+
+    if (!confirm("Delete ALL documents?")) return;
+
+    const tx = db.transaction(STORE, "readwrite");
+    tx.objectStore(STORE).clear();
+
+    tx.oncomplete = async () => {
+        state.currentDoc = null;
+
+        await refreshLibrary();
+
+        alert("Library cleared.");
+    };
+});
+  async function handleAsk(){ const question=askInput.value.trim(); if(!question) return; if(!state.currentDoc){ answerBox.textContent='Upload a PDF first so I have something to search through.'; return; } if(!state.currentDoc.sentences.length){ answerBox.textContent='No readable text was extracted from this PDF.'; return; } answerBox.innerHTML=`<div class="loader"><span class="spinner"></span>Finding the answer locally...</div>`; const answer=findBestSentence(question, state.currentDoc.sentences); if(!answer){ answerBox.textContent='I could not find a closely matching sentence. Try using words from the document.'; return; } highlightSentence(answer); answerBox.innerHTML=`${escapeHtml(answer)}<div class="src">— matched directly from the document</div><button class="speak-btn" id="speak-answer">🔊 Read aloud</button>`; $("speak-answer").addEventListener('click',()=>speak(answer)); }
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition; if(SpeechRecognition){ const recognition=new SpeechRecognition(); recognition.lang='en-US'; recognition.interimResults=false; recognition.maxAlternatives=1; const mic=$("mic-btn"); mic.addEventListener('click',()=>{ if(mic.classList.contains('listening')){ recognition.stop(); return; } try{ recognition.start(); mic.classList.add('listening'); } catch(err){ console.warn(err); } }); recognition.onresult=e=>{ askInput.value=e.results[0][0].transcript; handleAsk(); }; recognition.onend=()=>mic.classList.remove('listening'); recognition.onerror=()=>mic.classList.remove('listening'); } else { $("mic-btn").disabled=true; $("mic-btn").title='Speech recognition is not supported in this browser'; }
+  async function boot(){ await openDB(); await refreshLibrary(); await prepareLocalAI(); setStatus('No document loaded.<br>Everything runs <b>locally</b> in your browser.'); }
+  boot();
+</script>
+</body>
+</html>
