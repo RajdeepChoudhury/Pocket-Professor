@@ -6,6 +6,29 @@ It helps students read PDFs, generate notes, create flashcards, build quizzes, a
 
 ---
 
+# Screenshots
+
+## 📸 Screenshots 🖼️
+
+<p align="center">
+  <img src="screenshots/Pic 1.jpg" width="300"/>
+  <img src="screenshots/Pic 2.jpg" width="300"/>
+</p>
+
+<p align="center">
+  <img src="screenshots/Pic 3.jpg" width="300"/>
+  <img src="screenshots/Pic 4.jpg" width="300"/>
+</p>
+
+<p align="center">
+  <img src="screenshots/Pic 5.jpg" width="300"/>
+  <img src="screenshots/Pic 6.jpg" width="300"/>
+</p>
+
+<p align="center">
+  <img src="screenshots/Pic 7.jpg" width="300"/>
+</p>
+
 ## 🚀 Features
 
 - 📄 PDF Text Extraction
